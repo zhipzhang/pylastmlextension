@@ -63,7 +63,7 @@ jobs:
               run: cd docs && make html
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Python environment
         uses: ./.github/actions/setup-venv
@@ -112,7 +112,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       # 重新利用你写好的 action 环境
       - name: Setup Python environment
@@ -144,7 +144,7 @@ jobs:
     needs: [checks]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
