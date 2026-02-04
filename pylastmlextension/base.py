@@ -3,9 +3,10 @@ Write basic model class for training interface and method to write a
 json configuration file for the model.
 """
 
-from abc import ABC, abstractmethod
 import os
-from typing import Dict, List, Any
+from abc import ABC, abstractmethod
+from typing import Any, Dict, List
+
 import pandas as pd
 
 
@@ -80,7 +81,9 @@ class BaseModel(ABC):
         feature_info_list = []
         for f_name in self.features_:
             meta = self.feature_schema.get(f_name, {"level": "unknown", "description": "unknown"})
-            feature_info_list.append({"name": f_name, "level": meta["level"], "description": meta["description"]})
+            feature_info_list.append(
+                {"name": f_name, "level": meta["level"], "description": meta["description"]}
+            )
         config = {
             "meta": {"name": self.name, "model_type": self._get_model_type()},
             "model_path": self.model_path_,

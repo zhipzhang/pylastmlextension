@@ -123,36 +123,33 @@ logging.getLogger("sphinx.sphinx_autodoc_typehints").addFilter(ShutupSphinxAutod
 
 # conf.py 的最末尾添加
 
-import subprocess
 import os
+import subprocess
+
 
 def run_apidoc(_):
     # 1. 定义源码路径 (你的包在哪里)
     # 假设 conf.py 在 docs/source/，那么 ../../pylastmlextension 就是源码
     cur_dir = os.path.abspath(os.path.dirname(__file__))
     module_dir = os.path.join(cur_dir, "../../pylastmlextension")
-    output_dir = os.path.join(cur_dir, "api") # 输出到 api 文件夹
+    output_dir = os.path.join(cur_dir, "api")  # 输出到 api 文件夹
 
     # 2. 组装命令
     # -f: 强制覆盖
     # -e: 每个模块单独生成一页 (可选，看你喜好)
     # -M: 把模块放在列表首位
     cmd_path = "sphinx-apidoc"
-    if hasattr(sys, 'real_prefix'):  # 检查是否在 virtualenv 中
+    if hasattr(sys, "real_prefix"):  # 检查是否在 virtualenv 中
         # 尝试使用当前环境的 sphinx-apidoc
-        cmd_path = os.path.join(sys.prefix, 'bin', 'sphinx-apidoc')
+        cmd_path = os.path.join(sys.prefix, "bin", "sphinx-apidoc")
 
-    cmd = [
-        "sphinx-apidoc",
-        "-f",
-        "-o", output_dir,
-        module_dir
-    ]
-    
+    cmd = ["sphinx-apidoc", "-f", "-o", output_dir, module_dir]
+
     # 3. 执行命令
     print(f"[Custom] Running sphinx-apidoc: {' '.join(cmd)}")
     subprocess.check_call(cmd)
 
+
 def setup(app):
     # 让 Sphinx 在初始化构建器(builder-inited) 阶段触发 run_apidoc 函数
-    app.connect('builder-inited', run_apidoc)
+    app.connect("builder-inited", run_apidoc)

@@ -1,8 +1,7 @@
-import pytest
-
-import pandas as pd
 import os
 
+import pandas as pd
+import pytest
 
 from pylastmlextension.base import BaseModel
 
