@@ -1,4 +1,4 @@
-# **my-package**
+# **pylastmlextension**
 
 ```{toctree}
 :maxdepth: 2
@@ -7,6 +7,7 @@
 
 installation
 overview
+api/modules
 ```
 
 ```{toctree}
@@ -15,8 +16,8 @@ overview
 
 CHANGELOG
 CONTRIBUTING
-License <https://raw.githubusercontent.com/allenai/python-package-template/main/LICENSE>
-GitHub Repository <https://github.com/allenai/python-package-template>
+License <https://raw.githubusercontent.com/allenai/pylastmlextension/main/LICENSE>
+GitHub Repository <https://github.com/zhipzhang/pylastmlextension>
 ```
 
 ## Indices and tables

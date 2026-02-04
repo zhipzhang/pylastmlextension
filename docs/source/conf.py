@@ -18,11 +18,11 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.abspath("../../"))
 
-from my_package import VERSION, VERSION_SHORT  # noqa: E402
+from pylastmlextension import VERSION, VERSION_SHORT  # noqa: E402
 
 # -- Project information -----------------------------------------------------
 
-project = "my-package"
+project = "pylastmlextension"
 copyright = f"{datetime.today().year}, Allen Institute for Artificial Intelligence"
 author = "Allen Institute for Artificial Intelligence"
 version = VERSION_SHORT
@@ -82,7 +82,7 @@ typehints_defaults = "comma"
 #
 html_theme = "furo"
 
-html_title = f"my-package v{VERSION}"
+html_title = f"pylastmlextension v{VERSION}"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -97,7 +97,7 @@ html_theme_options = {
     "footer_icons": [
         {
             "name": "GitHub",
-            "url": "https://github.com/allenai/python-package-template",
+            "url": "https://github.com/zhipzhang/pylastmlextension",
             "html": """
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
@@ -119,3 +119,40 @@ class ShutupSphinxAutodocTypehintsFilter(logging.Filter):
 
 
 logging.getLogger("sphinx.sphinx_autodoc_typehints").addFilter(ShutupSphinxAutodocTypehintsFilter())
+
+
+# conf.py 的最末尾添加
+
+import subprocess
+import os
+
+def run_apidoc(_):
+    # 1. 定义源码路径 (你的包在哪里)
+    # 假设 conf.py 在 docs/source/，那么 ../../pylastmlextension 就是源码
+    cur_dir = os.path.abspath(os.path.dirname(__file__))
+    module_dir = os.path.join(cur_dir, "../../pylastmlextension")
+    output_dir = os.path.join(cur_dir, "api") # 输出到 api 文件夹
+
+    # 2. 组装命令
+    # -f: 强制覆盖
+    # -e: 每个模块单独生成一页 (可选，看你喜好)
+    # -M: 把模块放在列表首位
+    cmd_path = "sphinx-apidoc"
+    if hasattr(sys, 'real_prefix'):  # 检查是否在 virtualenv 中
+        # 尝试使用当前环境的 sphinx-apidoc
+        cmd_path = os.path.join(sys.prefix, 'bin', 'sphinx-apidoc')
+
+    cmd = [
+        "sphinx-apidoc",
+        "-f",
+        "-o", output_dir,
+        module_dir
+    ]
+    
+    # 3. 执行命令
+    print(f"[Custom] Running sphinx-apidoc: {' '.join(cmd)}")
+    subprocess.check_call(cmd)
+
+def setup(app):
+    # 让 Sphinx 在初始化构建器(builder-inited) 阶段触发 run_apidoc 函数
+    app.connect('builder-inited', run_apidoc)

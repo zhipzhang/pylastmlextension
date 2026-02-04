@@ -97,7 +97,7 @@ jobs:
         if: always()
         run: |
           . .venv/bin/activate
-          pip uninstall -y my-package
+          pip uninstall -y pylastmlextension
 # 在 jobs: 下方添加一个新的 deploy-docs 任务
   deploy-docs:
     name: Deploy Documentation
