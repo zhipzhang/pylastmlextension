@@ -1,5 +1,7 @@
 import os
+from typing import Optional
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -13,7 +15,9 @@ class MockBooster:
 
 
 class MockTestModel(BaseModel):
-    def _train_impl(self, x: pd.DataFrame, y: pd.Series) -> MockBooster:
+    def _train_impl(
+        self, x: pd.DataFrame, y: pd.Series, weights: Optional[pd.Series | np.ndarray] = None
+    ) -> MockBooster:
         return MockBooster()
 
     def _get_model_type(self) -> str:
@@ -71,6 +75,24 @@ def test_save_model(model_instance, sample_data, tmp_path):
         assert f.read() == "mock model"
 
 
+def test_save(model_instance, sample_data, tmp_path):
+    df, y = sample_data
+    model_instance.train(df, y)
+
+    output_dir = str(tmp_path / "output")
+    model_instance.save(output_dir)
+    expected_file_path = os.path.join(output_dir, "test_model.json")
+    assert os.path.exists(expected_file_path)
+    with open(expected_file_path, "r", encoding="utf-8") as f:
+        import json
+
+        config = json.load(f)
+    assert config["meta"]["name"] == "test_model"
+    assert config["meta"]["model_type"] == "test_type"
+    assert config["model_path"] == "test_model.txt"
+    assert len(config["features"]) == 3
+
+
 def test_to_dict(model_instance, sample_data, tmp_path):
     df, y = sample_data
     model_instance.train(df, y)
@@ -81,7 +103,7 @@ def test_to_dict(model_instance, sample_data, tmp_path):
     config = model_instance.to_dict()
     assert config["meta"]["name"] == "test_model"
     assert config["meta"]["model_type"] == "test_type"
-    assert config["model_path"] == os.path.join(output_dir, "test_model.txt")
+    assert config["model_path"] == "test_model.txt"
     assert len(config["features"]) == 3
 
     assert config["features"][0]["name"] == "featureA"

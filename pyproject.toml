@@ -21,6 +21,7 @@ requires-python = ">=3.8"
 dependencies = [
   "lightgbm",
   "optuna",
+  "optuna-integration[lightgbm]",
   "scikit-learn",
   "numpy",
   "pandas"

@@ -1,4 +1,4 @@
-""" Pre-defined schema for pylast datalevels"""
+"""Pre-defined schema for pylast datalevels"""
 
 SCHEMA_DICT = {
     # DL2 fields
@@ -7,6 +7,18 @@ SCHEMA_DICT = {
         "description": "Reconstructed impact distance from telescope to shower axis",
     },
     "tel_rec_energy": {"level": "dl2", "description": "Telescope-level reconstructed energy"},
+    "rec_energy_std": {
+        "level": "dl2",
+        "description": "Standard deviation of the reconstructed energy",
+    },
+    "n_tel":{
+        "level": "dl2",
+        "description": "Number of telescopes used for reconstruction",
+    },
+    "rec_offset": {
+        "level": "dl2",
+        "description": "Offset of the reconstructed direction",
+    },
     "rec_energy": {
         "level": "dl2",
         "description": "Event-level reconstructed energy from ML energy reconstructor",
@@ -86,6 +98,10 @@ SCHEMA_DICT = {
     },
     # Simulation fields - Morphology parameters
     "morphology_n_pixels": {
+        "level": "simulation",
+        "description": "Total number of pixels in the image",
+    },
+    "morphology_num_pixels": {
         "level": "simulation",
         "description": "Total number of pixels in the image",
     },

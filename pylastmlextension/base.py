@@ -5,8 +5,9 @@ json configuration file for the model.
 
 import os
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
+import numpy as np
 import pandas as pd
 
 
@@ -33,7 +34,9 @@ class BaseModel(ABC):
         self.model_path_: Any = None
 
     @abstractmethod
-    def _train_impl(self, x: pd.DataFrame, y: pd.Series) -> Any:
+    def _train_impl(
+        self, x: pd.DataFrame, y: pd.Series, weights: Optional[pd.Series | np.ndarray]
+    ) -> Any:
         """
         Concrete implementation of the training logic.
         """
@@ -53,12 +56,14 @@ class BaseModel(ABC):
         """
         return {}
 
-    def train(self, x: pd.DataFrame, y: pd.Series) -> None:
+    def train(
+        self, x: pd.DataFrame, y: pd.Series, weights: Optional[pd.Series | np.ndarray] = None
+    ) -> None:
         """
         Train the model.
         """
         self.features_ = x.columns.tolist()
-        self.model_ = self._train_impl(x, y)
+        self.model_ = self._train_impl(x, y, weights)
         print(f"Model {self.name} trained successfully with {len(self.features_)} features.")
 
     def save_model(self, output_dir: str) -> None:
@@ -66,9 +71,21 @@ class BaseModel(ABC):
         Save the model to output_dir.
         """
         os.makedirs(output_dir, exist_ok=True)
-        self.model_path_ = os.path.join(output_dir, f"{self.name}.txt")
-        self.model_.save_model(self.model_path_)
-        print(f"Model {self.name} saved to {self.model_path_}.")
+        self.model_path_ = f"{self.name}.txt"
+        self.model_.save_model(os.path.join(output_dir, self.model_path_))
+        print(f"Model {self.name} saved to {os.path.join(output_dir, self.model_path_)}.")
+
+    def save(self, output_dir: str) -> None:
+        """
+        Save the model and config json file to output_dir.
+        """
+        os.makedirs(output_dir, exist_ok=True)
+        self.save_model(output_dir)
+        import json
+
+        with open(os.path.join(output_dir, f"{self.name}.json"), "w", encoding="utf-8") as f:
+            json.dump(self.to_dict(), f, indent=4)
+        print(f"Model {self.name} and config json file saved to {output_dir}.")
 
     def to_dict(self) -> Dict[str, Any]:
         """
