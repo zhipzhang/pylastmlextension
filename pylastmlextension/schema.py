@@ -11,7 +11,7 @@ SCHEMA_DICT = {
         "level": "dl2",
         "description": "Standard deviation of the reconstructed energy",
     },
-    "n_tel":{
+    "n_tel": {
         "level": "dl2",
         "description": "Number of telescopes used for reconstruction",
     },

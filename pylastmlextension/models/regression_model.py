@@ -33,7 +33,7 @@ class RegressionModel(LightGBMBaseModel):
             return "regression_l2"
         elif self.metric == "r2":
             return "regression_l2"
-        else:   
+        else:
             raise ValueError(f"Invalid metric: {self.metric}")
 
     def _get_model_type(self) -> str:
